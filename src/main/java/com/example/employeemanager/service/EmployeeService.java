@@ -6,6 +6,7 @@ import com.example.employeemanager.repo.EmployeeRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,5 +40,19 @@ public class EmployeeService {
 
     public void deleteEmployee(Long id) {
         employeeRepo.deleteById(id);
+    }
+
+    public List<Employee> searchEmployees(String key) {
+        List<Employee> employees = new ArrayList<>();
+
+        for(Employee employee : findAllEmployees()) {
+             if(employee.getName().toLowerCase().contains(key.toLowerCase())
+                     || employee.getEmail().toLowerCase().contains(key.toLowerCase())
+                     || employee.getPhone().toLowerCase().contains(key.toLowerCase())
+                     || employee.getJobTitle().toLowerCase().contains(key.toLowerCase())) {
+                 employees.add(employee);
+             }
+        }
+        return employees;
     }
 }

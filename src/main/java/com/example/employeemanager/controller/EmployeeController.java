@@ -48,4 +48,10 @@ public class EmployeeController {
         employeeService.deleteEmployee(id);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
+    @GetMapping("/search/{key}")
+    public ResponseEntity<List<Employee>> getEmployeeById(@PathVariable("key") String key) {
+        List<Employee> employees = employeeService.searchEmployees(key);
+        return new ResponseEntity<>(employees, HttpStatus.OK);
+    }
 }
