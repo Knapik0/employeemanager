@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface EmployeeRepo extends JpaRepository<Employee, Long> {
 
-    //YAGNI - just for educational purposes
     @Query("SELECT " +
             "CASE WHEN COUNT(e) > 0 THEN TRUE ELSE FALSE END " +
             "FROM Employee e WHERE e.email = ?1")

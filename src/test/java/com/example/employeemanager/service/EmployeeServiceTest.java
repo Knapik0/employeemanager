@@ -1,5 +1,6 @@
 package com.example.employeemanager.service;
 
+import com.example.employeemanager.exception.BadRequestException;
 import com.example.employeemanager.model.Employee;
 import com.example.employeemanager.repo.EmployeeRepo;
 import org.junit.jupiter.api.AfterEach;
@@ -12,7 +13,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,7 +33,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void canAddEmployee() {
+    void canAddEmployeeIfEmailDoesntExist() {
         // given
         Employee employee = new Employee(
                 1,
@@ -48,6 +53,29 @@ class EmployeeServiceTest {
         Employee capturedEmployee = employeeArgumentCaptor.getValue();
 
         assertEquals(employee, capturedEmployee);
+    }
+
+    @Test
+    void cantAddEmployeeIfEmailExistsAndThrowsException() {
+        // given
+        Employee employee = new Employee(
+                1,
+                "Jan",
+                "jan@example.com",
+                "Mechsnik",
+                "505",
+                "obraz",
+                "333");
+        given(employeeRepo.selectExistsEmail(anyString())).willReturn(true);
+        // when
+
+        // then
+        BadRequestException badRequestException = assertThrows(BadRequestException.class,
+                                                    () -> underTest.addEmployee(employee));
+
+        verify(employeeRepo, never()).save(any());
+
+        assertEquals("Email jan@example.com already exists", badRequestException.getMessage());
     }
 
     @Test

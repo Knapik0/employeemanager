@@ -1,5 +1,6 @@
 package com.example.employeemanager.service;
 
+import com.example.employeemanager.exception.BadRequestException;
 import com.example.employeemanager.exception.UserNotFoundException;
 import com.example.employeemanager.model.Employee;
 import com.example.employeemanager.repo.EmployeeRepo;
@@ -21,6 +22,10 @@ public class EmployeeService {
     }
 
     public Employee addEmployee(Employee employee) {
+        boolean emailExists = employeeRepo.selectExistsEmail(employee.getEmail());
+        if (emailExists) {
+            throw new BadRequestException("Email " + employee.getEmail() + " already exists");
+        }
         employee.setEmployeeCode(UUID.randomUUID().toString());
         return employeeRepo.save(employee);
     }
