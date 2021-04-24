@@ -1,6 +1,7 @@
 package com.example.employeemanager.service;
 
 import com.example.employeemanager.exception.BadRequestException;
+import com.example.employeemanager.exception.UserNotFoundException;
 import com.example.employeemanager.model.Employee;
 import com.example.employeemanager.repo.EmployeeRepo;
 import org.junit.jupiter.api.AfterEach;
@@ -13,9 +14,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -88,8 +90,43 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void canFindEmployeeById() {
+    void canFindEmployeeByIdWhenIdExists() {
+        // given
+        Employee employee = new Employee(
+                1,
+                "Jan",
+                "jan@example.com",
+                "Mechsnik",
+                "505",
+                "obraz",
+                "333");
+        employeeRepo.save(employee);
+        given(employeeRepo.findById(anyLong())).willReturn(Optional.of(employee));
+        // when
+        underTest.findEmployeeById(0L);
+        // then
 
+        verify(employeeRepo).findById(0L);
+    }
+
+    @Test
+    void cantFindEmployeeByIdWhenIdDoesntExist() {
+        // given
+        Employee employee = new Employee(
+                1,
+                "Jan",
+                "jan@example.com",
+                "Mechsnik",
+                "505",
+                "obraz",
+                "333");
+        // when
+
+        // then
+        UserNotFoundException userNotFoundException = assertThrows(UserNotFoundException.class,
+                () -> underTest.findEmployeeById(employee.getId()));
+
+        assertEquals("User by id: 1 was not found", userNotFoundException.getMessage());
     }
 
     @Test
