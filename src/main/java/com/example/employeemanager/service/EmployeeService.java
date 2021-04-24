@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -23,9 +24,23 @@ public class EmployeeService {
 
     public Employee addEmployee(Employee employee) {
         boolean emailExists = employeeRepo.selectExistsEmail(employee.getEmail());
+        boolean employeeExists = employeeRepo.existsById(employee.getId());
+
+        // if email exists
         if (emailExists) {
-            throw new BadRequestException("Email " + employee.getEmail() + " already exists");
-        }
+            //  and employee doesnt exists or other employee has given email throws exception
+            if (employeeExists) {
+                String previousEmail = employeeRepo.getEmployeeEmailById(employee.getId());
+                boolean employeeHadDifferentEmail = !previousEmail.equals(employee.getEmail());
+                if (employeeHadDifferentEmail) {
+                    throw new BadRequestException("Email " + employee.getEmail() + " already exists");
+                }
+            } else {
+                    throw new BadRequestException("Email " + employee.getEmail() + " already exists");
+
+                }
+
+            }
         employee.setEmployeeCode(UUID.randomUUID().toString());
         return employeeRepo.save(employee);
     }
