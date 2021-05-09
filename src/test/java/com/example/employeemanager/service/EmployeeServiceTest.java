@@ -4,14 +4,11 @@ import com.example.employeemanager.exception.BadRequestException;
 import com.example.employeemanager.exception.UserNotFoundException;
 import com.example.employeemanager.model.Employee;
 import com.example.employeemanager.repo.EmployeeRepo;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;

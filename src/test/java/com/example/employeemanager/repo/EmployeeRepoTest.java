@@ -27,7 +27,7 @@ class EmployeeRepoTest {
                 1,
                 "Jan",
                 email,
-                "Mechsnik",
+                "Mechanik",
                 "505",
                 "obraz",
                 "333");
